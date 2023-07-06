@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
 import { withNavigation } from "react-navigation";
 import Title from "./components/title";
-
+import { Pedometer } from "expo-sensors";
 
 const CalculationScreen = ({ navigation }) => {
   const [operators, setOperators] = useState([]);
@@ -11,12 +11,16 @@ const CalculationScreen = ({ navigation }) => {
   const [userOperators, setUserOperators] = useState(["", "", ""]);
   const [elapsedTime, setElapsedTime] = useState(0);
   const timerRef = useRef(null);
+  const [stepCount, setStepCount] = useState(0);
+  const [lastStepCount, setLastStepCount] = useState(0);
 
   useEffect(() => {
     generateCalculation();
     startTimer();
+    startPedometer();
     return () => {
       stopTimer();
+      stopPedometer();
     };
   }, []);
 
@@ -84,8 +88,10 @@ const CalculationScreen = ({ navigation }) => {
 
     const userResult = eval(expression).toFixed(2);
 
+    console.log(operators)
+
     if (userResult == result) {
-      navigation.navigate("ResultScreen", { numbers, userOperators, result, elapsedTime });
+      navigation.navigate("ResultScreen", { numbers, userOperators, result, elapsedTime, stepCount: stepCount - lastStepCount });
     } else {
       alert("Oops! Your answer is incorrect. Please try again.");
     }
@@ -94,18 +100,43 @@ const CalculationScreen = ({ navigation }) => {
   const handleRefresh = () => {
     generateCalculation();
     setElapsedTime(0);
+    setStepCount(0);
     clearInterval(timerRef.current);
     startTimer();
+    startPedometer();
+    setLastStepCount(stepCount);
   };
 
   const startTimer = () => {
     timerRef.current = setInterval(() => {
-      setElapsedTime((prevElapsedTime) => prevElapsedTime + 0.033); 
+      setElapsedTime((prevElapsedTime) => prevElapsedTime + 0.033);
     }, 33);
   };
 
   const stopTimer = () => {
     clearInterval(timerRef.current);
+  };
+
+  const startPedometer = () => {
+    const updateFrequency = 100; // Update frequency in milliseconds
+
+    Pedometer.isAvailableAsync().then((result) => {
+      if (result) {
+        Pedometer.watchStepCount(
+          (result) => {
+            setStepCount(result.steps);
+          },
+          updateFrequency,
+          { stepCount: 0 }
+        );
+      } else {
+        console.log("Pedometer is not available on this device.");
+      }
+    });
+  };
+
+  const stopPedometer = () => {
+    Pedometer.stopObserving();
   };
 
   return (

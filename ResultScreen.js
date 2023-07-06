@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 
 const ResultScreen = ({ route }) => {
   const navigation = useNavigation();
-  const { numbers, userOperators, result, elapsedTime } = route.params || {};
+  const { numbers, userOperators, result, elapsedTime, stepCount} = route.params || {};
 
   const calculation = numbers.map((number, index) => {
     if (index !== numbers.length - 1) {
@@ -19,13 +19,14 @@ const ResultScreen = ({ route }) => {
     navigation.goBack();
   };
 
+  const displayStepCount = stepCount >= 0 ? stepCount : 0;
+
   return (
     <View style={styles.container}>
       <Title></Title>
       <View style={result}>
         <Text style={styles.text}>Elapsed Time: {elapsedTime.toFixed(2)} {'\n'}</Text>
-      </View>
-      <View style={styles.result}>
+        <Text style={styles.text}>Steps taken: {displayStepCount} {'\n'}</Text>
         <Text style={styles.text}>Resulting Equation:</Text>
         <Text style={styles.text}>{calculation.join(' ')}</Text>
       </View>
