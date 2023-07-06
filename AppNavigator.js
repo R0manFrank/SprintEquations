@@ -8,8 +8,8 @@ const Stack = createNativeStackNavigator();
 const AppNavigator = () => {
   return (
     <Stack.Navigator initialRouteName="CalculationScreen">
-      <Stack.Screen name="CalculationScreen" component={CalculationScreen} />
-      <Stack.Screen name="ResultScreen" component={ResultScreen} />
+      <Stack.Screen name="CalculationScreen" component={CalculationScreen} options={{ headerShown: false}}/>
+      <Stack.Screen name="ResultScreen" component={ResultScreen} options={{ headerShown: false}}/>
     </Stack.Navigator>
   );
 };

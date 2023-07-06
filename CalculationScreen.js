@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button } from 'react-native';
-import { withNavigation } from 'react-navigation';
+import React, { useState, useEffect } from "react";
+import { View, Text, TextInput, Button, TouchableOpacity} from "react-native";
+import { withNavigation } from "react-navigation";
+import { StyleSheet } from "react-native";
+import Title from "./components/title";
 
 const CalculationScreen = ({ navigation }) => {
   const [operators, setOperators] = useState([]);
   const [numbers, setNumbers] = useState([]);
   const [result, setResult] = useState(null);
-  const [userOperators, setUserOperators] = useState(['', '', '']);
+  const [userOperators, setUserOperators] = useState(["", "", ""]);
 
   useEffect(() => {
     generateCalculation();
@@ -20,15 +22,17 @@ const CalculationScreen = ({ navigation }) => {
     setOperators(newOperators);
     setNumbers(newNumbers);
     setResult(newResult);
-    setUserOperators(['', '', '']);
+    setUserOperators(["", "", ""]);
   };
 
   const generateRandomOperators = () => {
-    const availableOperators = ['+', '-', '*', '/'];
+    const availableOperators = ["+", "-", "*", "/"];
     const newOperators = [];
 
     for (let i = 0; i < 3; i++) {
-      const randomOperatorIndex = Math.floor(Math.random() * availableOperators.length);
+      const randomOperatorIndex = Math.floor(
+        Math.random() * availableOperators.length
+      );
       newOperators.push(availableOperators[randomOperatorIndex]);
     }
 
@@ -39,7 +43,7 @@ const CalculationScreen = ({ navigation }) => {
     const newNumbers = [];
 
     for (let i = 0; i < 4; i++) {
-      const randomNumber = Math.floor(Math.random() * 9)+1; // Generates a random number between 0 and 9
+      const randomNumber = Math.floor(Math.random() * 9) + 1;
       newNumbers.push(randomNumber);
     }
 
@@ -47,7 +51,7 @@ const CalculationScreen = ({ navigation }) => {
   };
 
   const calculateResult = (operators, numbers) => {
-    let expression = '';
+    let expression = "";
 
     for (let i = 0; i < numbers.length - 1; i++) {
       expression += numbers[i] + operators[i];
@@ -67,16 +71,17 @@ const CalculationScreen = ({ navigation }) => {
 
   const handleCheckResult = () => {
     const expression = numbers
-      .map((number, index) => (index > 0 ? userOperators[index - 1] + number : number))
-      .join('');
+      .map((number, index) =>
+        index > 0 ? userOperators[index - 1] + number : number
+      )
+      .join("");
 
     const userResult = eval(expression).toFixed(2);
 
-
     if (userResult == result) {
-      navigation.navigate('ResultScreen', { numbers, userOperators, result });
+      navigation.navigate("ResultScreen", { numbers, userOperators, result });
     } else {
-      alert('Oops! Your answer is incorrect. Please try again.');
+      alert("Oops! Your answer is incorrect. Please try again.");
     }
   };
 
@@ -85,35 +90,97 @@ const CalculationScreen = ({ navigation }) => {
   };
 
   return (
-    <View>
-      <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+    <View style={styles.container}>
+      <Title></Title>
+      <View style={styles.calculation}>
         {numbers.map((number, index) => (
           <React.Fragment key={index}>
             {index > 0 && (
               <TextInput
-                style={{
-                  borderWidth: 1,
-                  borderColor: 'gray',
-                  marginHorizontal: 5,
-                  padding: 5,
-                  width: 40,
-                  textAlign: 'center',
-                }}
+                style={styles.inputFields}
                 value={userOperators[index - 1]}
-                onChangeText={(value) => handleUserOperatorChange(index - 1, value)}
+                onChangeText={(value) =>
+                  handleUserOperatorChange(index - 1, value)
+                }
                 maxLength={1}
               />
             )}
-            <Text>{number}</Text>
+            <Text style={styles.number}>{number}</Text>
           </React.Fragment>
         ))}
-        <Text>= </Text>
-        <Text>{result}</Text>
+        <Text style={styles.number}> = </Text>
+        <Text style={styles.number}>{result}</Text>
       </View>
-      <Button title="Check Result" onPress={handleCheckResult} />
-      <Button title="Refresh" onPress={handleRefresh} />
+      <TouchableOpacity style={styles.resultButton} onPress={handleCheckResult}>
+        <Text style={styles.buttonText}>Check Result</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.refreshButton} onPress={handleRefresh}>
+        <Text style={styles.buttonText}>Refresh</Text>
+      </TouchableOpacity>
     </View>
   );
 };
 
 export default withNavigation(CalculationScreen);
+
+const styles = StyleSheet.create({
+  calculation: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  container: {
+    height: "100%",
+    width: "100%",
+    backgroundColor: "#9DD0FF",
+  },
+
+  inputFields: {
+    borderWidth: 2,
+    borderColor: "gray",
+    backgroundColor: "lightgray",
+    marginHorizontal: 5,
+    padding: 5,
+    width: 40,
+    textAlign: "center",
+  },
+
+  number: {
+    fontWeight: "bold",
+    fontSize: 20,
+  },
+
+  resultButton: {
+    width: "20%",
+    marginTop: 50,
+    backgroundColor: '#81FF8D',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    borderWidth: 2,
+    borderColor: 'black',
+    marginLeft: "auto",
+    marginRight: "auto",
+  },
+
+  refreshButton: {
+    marginTop: 40,
+    backgroundColor: '#8F8F8F',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    borderWidth: 2,
+    borderColor: 'black',
+    marginLeft: "auto",
+    marginRight: "auto",
+  },
+
+  buttonText: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: 'black',
+    textAlign: 'center',
+  },
+
+});
