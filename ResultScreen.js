@@ -2,10 +2,11 @@ import React from 'react';
 import { View, Text, Button, StyleSheet, TouchableOpacity } from 'react-native';
 import Title from './components/title';
 import { useNavigation } from '@react-navigation/native';
+import { useEffect } from 'react';
 
 const ResultScreen = ({ route }) => {
   const navigation = useNavigation();
-  const { numbers, userOperators, result, elapsedTime, stepCount} = route.params || {};
+  const { numbers, userOperators, result, elapsedTime, stepCount, updateHighScore, HighScoreDisplay } = route.params || {};
 
   const calculation = numbers.map((number, index) => {
     if (index !== numbers.length - 1) {
@@ -28,11 +29,11 @@ const ResultScreen = ({ route }) => {
   const stepCountScore = stepCount * stepCountWeight;
   const elapsedTimeScore = 1 / elapsedTime * elapsedTimeWeight;
 
-  console.log(stepCountScore, elapsedTimeScore, elapsedTime);
-
   const totalScore = stepCountScore * elapsedTimeScore + elapsedTimeScore/2;
 
-  console.log(totalScore);
+  useEffect(() => {
+    updateHighScore(totalScore);
+  }, [updateHighScore, totalScore]);
 
   return (
     <View style={styles.container}>
@@ -51,6 +52,9 @@ const ResultScreen = ({ route }) => {
       <TouchableOpacity style={styles.backButton} onPress={handleGoBack}>
         <Text style={styles.buttonText}>Go Back</Text>
       </TouchableOpacity>
+      <View style={styles.highScore}>
+        <HighScoreDisplay ></HighScoreDisplay>
+      </View>
     </View>
   );
 };
@@ -97,6 +101,13 @@ const styles = StyleSheet.create({
     fontSize: 36,
     fontWeight: "bold",
   },  
+
+  highScore: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: "10%",
+  },
 
 });
 

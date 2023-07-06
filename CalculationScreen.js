@@ -5,6 +5,7 @@ import Title from "./components/title";
 import { Pedometer } from "expo-sensors";
 
 const CalculationScreen = ({ navigation }) => {
+
   const [operators, setOperators] = useState([]);
   const [numbers, setNumbers] = useState([]);
   const [result, setResult] = useState(null);
@@ -249,4 +250,5 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "black",
   },
+
 });
