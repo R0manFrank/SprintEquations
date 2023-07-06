@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Vibration } from "react-native";
 import { withNavigation } from "react-navigation";
 import Title from "./components/title";
 import { Pedometer } from "expo-sensors";
@@ -93,6 +93,7 @@ const CalculationScreen = ({ navigation }) => {
     if (userResult == result) {
       navigation.navigate("ResultScreen", { numbers, userOperators, result, elapsedTime, stepCount: stepCount - lastStepCount });
     } else {
+      Vibration.vibrate(200)
       alert("Oops! Your answer is incorrect. Please try again.");
     }
   };
