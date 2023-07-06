@@ -1,17 +1,23 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, Button, TouchableOpacity} from "react-native";
+import React, { useState, useEffect, useRef } from "react";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
 import { withNavigation } from "react-navigation";
-import { StyleSheet } from "react-native";
 import Title from "./components/title";
+
 
 const CalculationScreen = ({ navigation }) => {
   const [operators, setOperators] = useState([]);
   const [numbers, setNumbers] = useState([]);
   const [result, setResult] = useState(null);
   const [userOperators, setUserOperators] = useState(["", "", ""]);
+  const [elapsedTime, setElapsedTime] = useState(0);
+  const timerRef = useRef(null);
 
   useEffect(() => {
     generateCalculation();
+    startTimer();
+    return () => {
+      stopTimer();
+    };
   }, []);
 
   const generateCalculation = () => {
@@ -79,7 +85,7 @@ const CalculationScreen = ({ navigation }) => {
     const userResult = eval(expression).toFixed(2);
 
     if (userResult == result) {
-      navigation.navigate("ResultScreen", { numbers, userOperators, result });
+      navigation.navigate("ResultScreen", { numbers, userOperators, result, elapsedTime });
     } else {
       alert("Oops! Your answer is incorrect. Please try again.");
     }
@@ -87,11 +93,29 @@ const CalculationScreen = ({ navigation }) => {
 
   const handleRefresh = () => {
     generateCalculation();
+    setElapsedTime(0);
+    clearInterval(timerRef.current);
+    startTimer();
+  };
+
+  const startTimer = () => {
+    timerRef.current = setInterval(() => {
+      setElapsedTime((prevElapsedTime) => prevElapsedTime + 0.033); 
+    }, 33);
+  };
+
+  const stopTimer = () => {
+    clearInterval(timerRef.current);
   };
 
   return (
     <View style={styles.container}>
       <Title></Title>
+      <View style={styles.timer}>
+        <Text style={styles.elapsedTimeText}>
+          Elapsed Time: {elapsedTime.toFixed(2)} seconds
+        </Text>
+      </View>
       <View style={styles.calculation}>
         {numbers.map((number, index) => (
           <React.Fragment key={index}>
@@ -154,33 +178,43 @@ const styles = StyleSheet.create({
   resultButton: {
     width: "20%",
     marginTop: 50,
-    backgroundColor: '#81FF8D',
+    backgroundColor: "#81FF8D",
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,
     borderWidth: 2,
-    borderColor: 'black',
+    borderColor: "black",
     marginLeft: "auto",
     marginRight: "auto",
   },
 
   refreshButton: {
     marginTop: 40,
-    backgroundColor: '#8F8F8F',
+    backgroundColor: "#8F8F8F",
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,
     borderWidth: 2,
-    borderColor: 'black',
+    borderColor: "black",
     marginLeft: "auto",
     marginRight: "auto",
   },
 
   buttonText: {
     fontSize: 12,
-    fontWeight: 'bold',
-    color: 'black',
-    textAlign: 'center',
+    fontWeight: "bold",
+    color: "black",
+    textAlign: "center",
   },
 
+  timer: {
+    marginBottom: 40,
+    left: "15%",
+  },
+
+  elapsedTimeText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "black",
+  },
 });
