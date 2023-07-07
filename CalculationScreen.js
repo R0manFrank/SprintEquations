@@ -238,6 +238,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "black",
     textAlign: "center",
+    
   },
 
   timer: {
