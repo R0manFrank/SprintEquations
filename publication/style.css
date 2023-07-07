@@ -1,0 +1,42 @@
+body{
+    font-family: Consolas;
+    background-color: #CDEFFF;
+    justify-content: center;
+    align-items: center;
+}
+
+.container{
+    justify-content: center;
+    align-items: center;
+}
+
+.title{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.titleText{
+    margin-left: 30px;
+    margin-right: 80px;
+}
+
+.images{
+    width: 15%;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.imageBox{
+    display: flex;
+    width: 100% ;
+    justify-content: center;
+    align-items: center;
+}
+
+.descriptionBox{
+    width: 30%;
+}
+
