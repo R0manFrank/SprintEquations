@@ -74,8 +74,9 @@ const CalculationScreen = ({ navigation }) => {
     return result;
   };
 
-  const handleUserOperatorChange = (index, operator) => {
+  const handleUserOperatorChange = (index, text) => {
     const newUserOperators = [...userOperators];
+    const operator = text.replace(/[^+-/*]/g, '');
     newUserOperators[index] = operator;
     setUserOperators(newUserOperators);
   };
@@ -160,6 +161,7 @@ const CalculationScreen = ({ navigation }) => {
                   handleUserOperatorChange(index - 1, value)
                 }
                 maxLength={1}
+                keyboardType="numbers-and-punctuation"
               />
             )}
             <Text style={styles.number}>{number}</Text>
@@ -238,7 +240,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "black",
     textAlign: "center",
-    
   },
 
   timer: {
